@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  app:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    links:
+      - phpfpm
+      - db
+    volumes:
+      - ./src:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+
+  db:
+    build:
+      context: ./images/db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: parkings
+      MYSQL_DATABASE: parkings
+      MYSQL_USER: parkings
+      MYSQL_PASSWORD: parkings
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/
+
+  phpfpm:
+    build:
+      context: ./images/phpfpm
+      dockerfile: Dockerfile
+    links:
+      - db
+    volumes:
+      - ./src:/var/www/html
+volumes:
+  dbdata:

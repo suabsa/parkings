@@ -1,0 +1,4 @@
+#!/bin/bash
+docker-compose build && docker-compose up -d
+sleep 1 # this will ensure that image get downloaded if not downloaded already
+docker-compose -f docker-compose.yml start
